@@ -18,24 +18,44 @@ import java.util.Random;
 public class PlayField extends View {
 
     int padding = 20;
-    float step;
-    int r;
     int width;
     int height;
-    int n = 5, m = 5; // field size
-    boolean arrayLamps[][] = new boolean[n][m];
-    Paint paint = new Paint();
-    float touchX,  touchY;
-
+    float step;
+    int r;
     int count = 0;
     int score = 50;
+    int sumScore = 0;
+    int n, m;
+    Paint paint = new Paint();
+    float touchX,  touchY;
+    boolean arrayLamps[][];
+    public PlayField(Context context, int n) {
+        super(context);
+        this.n = n;
+        fillLampsArray();
+    }
+
+    void fillLampsArray() {
+        arrayLamps = new boolean[n][n];
+        Random random = new Random();
+        for (int i = 0; i < arrayLamps.length; i++) {
+            for (int j = 0; j < arrayLamps[i].length; j++) {
+                boolean flag = random.nextBoolean();
+                if(flag) arrayLamps[i][j] = true;
+            }
+        }
+    }
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             touchX = event.getX();
             touchY = event.getY();
         }
-        calculation();
+        if(n <=5) {
+            calculation();
+        }
         return super.onTouchEvent(event);
 
     }
@@ -54,10 +74,21 @@ public class PlayField extends View {
 
         if(checkWin()) {
             Paint fontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            fontPaint.setTextSize(50);
+            fontPaint.setTextSize(40);
             fontPaint.setStyle(Paint.Style.STROKE);
-            canvas.drawText("Поздравляем, вы выиграли!", padding, 200,  fontPaint);
-            canvas.drawText("Ваш счет: " + score, padding, 300,  fontPaint);
+            sumScore += score;
+            canvas.drawText("Уровень " + (n-2), padding, 200,  fontPaint);
+            canvas.drawText("Поздравляем, вы выиграли!", padding, 300,  fontPaint);
+            canvas.drawText("Cчет за уровень: " + score, padding, 400,  fontPaint);
+            canvas.drawText("Общий счет: " + sumScore, padding, 500,  fontPaint);
+            if(n < 5) {
+                canvas.drawText("Для продолжения коснитесь экрана", padding, 600,  fontPaint);
+            }
+            count = 0;
+            score = 50;
+            n++;
+            fillLampsArray();
+
         }
         else {
             for (int i = 0; i < arrayLamps.length; i++) {
@@ -76,17 +107,6 @@ public class PlayField extends View {
             }
         }
 
-    }
-
-    public PlayField(Context context) {
-        super(context);
-        Random random = new Random();
-        for (int i = 0; i < arrayLamps.length; i++) {
-            for (int j = 0; j < arrayLamps[i].length; j++) {
-                boolean flag = random.nextBoolean();
-                if(flag) arrayLamps[i][j] = true;
-            }
-        }
     }
 
     boolean checkWin() {
