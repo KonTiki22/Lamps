@@ -9,12 +9,6 @@ import android.view.View;
 
 import java.util.Random;
 
- class Lamp {
-     float x;
-     float y;
-     float r;
-        }
-
 public class PlayField extends View {
 
     int padding = 20;
@@ -25,7 +19,7 @@ public class PlayField extends View {
     int count = 0;
     int score = 50;
     int sumScore = 0;
-    int n, m;
+    int n;
     Paint paint = new Paint();
     float touchX,  touchY;
     boolean arrayLamps[][];
